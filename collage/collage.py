@@ -5,7 +5,7 @@ import random
 import sys
 
 
-class Montage:
+class Collage:
     def __init__(self, args):
         if not os.path.isfile(args.image):
             print('Please provide a path to an existing image')
@@ -56,16 +56,16 @@ class Montage:
 
 def main():
     args = parse_args()
-    montage = Montage(args)
-    montage.create()
-    montage.show()
+    collage = Collage(args)
+    collage.create()
+    collage.show()
     
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('image', help='Image to use in montage')
-    parser.add_argument('--width', type=int, default=1280, help='Montage width')
-    parser.add_argument('--height', type=int, default=720, help='Montage height')
+    parser.add_argument('image', help='Image to use in collage')
+    parser.add_argument('--width', type=int, default=1280, help='Collage width')
+    parser.add_argument('--height', type=int, default=720, help='Collage height')
     parser.add_argument('--count', type=int, default=50, help='Number of instances of the image to include')
     parser.add_argument('--minscale', type=int, default=50, help='Smallest scaling of image (in percent)')
     parser.add_argument('--maxscale', type=int, default=150, help='Largest scaling of image (in percent)')
