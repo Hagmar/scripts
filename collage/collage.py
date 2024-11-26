@@ -7,15 +7,15 @@ import sys
 
 class Collage:
     def __init__(self, args):
-        if not os.path.isfile(args.image):
-            print('Please provide a path to an existing image')
-            sys.exit(1)
-        elif args.minscale > args.maxscale:
+        for image in args.images:
+            if not os.path.isfile(image):
+                print('Please provide a path to an existing image')
+                sys.exit(1)
+        if args.minscale > args.maxscale:
             print('Smallest scaling must be smaller than the largest scaling')
             sys.exit(2)
 
-        self.image = Image.open(args.image)
-        self.input_width, self.input_height = self.image.size
+        self.images = list(map(Image.open, args.images))
         self.width = args.width
         self.height = args.height
         self.minscale = args.minscale / 100
@@ -25,17 +25,19 @@ class Collage:
         self.n = args.count
 
     def resize_and_rotate(self):
+        image = random.choice(self.images)
+        width, height = image.size
         scale = self.minscale + (random.random() * (self.maxscale - self.minscale))
-        new_width = int(self.input_width * scale)
-        new_height = int(self.input_height * scale)
+        new_width = int(width * scale)
+        new_height = int(height * scale)
         rotation = random.random() * 360
 
-        resized = self.image.resize((new_width, new_height))
+        resized = image.resize((new_width, new_height))
         rotated = resized.rotate(rotation, expand=1)
         #print('Minscale: {}\nMaxscale: {}\nScale: {}\nOriginal size: {}\nNew size: {}\nRotation: {}'.format(
         #    self.minscale, self.maxscale, scale, self.image.size, resized.size, rotation))
         return rotated
-    
+
     def apply_image(self, new_image):
         new_x, new_y = new_image.size
         position_x = random.randint(0, self.width) - (new_x // 2)
@@ -59,11 +61,11 @@ def main():
     collage = Collage(args)
     collage.create()
     collage.show()
-    
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('image', help='Image to use in collage')
+    parser.add_argument('images', nargs='+', help='Images to use in collage')
     parser.add_argument('--width', type=int, default=1280, help='Collage width')
     parser.add_argument('--height', type=int, default=720, help='Collage height')
     parser.add_argument('--count', type=int, default=50, help='Number of instances of the image to include')
